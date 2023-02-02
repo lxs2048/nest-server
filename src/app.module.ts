@@ -5,6 +5,8 @@ import configuration from './config/index';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { RedisModuleOptions } from 'nestjs-redis';
 import { RedisUtilModule } from './common/libs/redis/redis.module';
+import { TasksModule } from 'src/common/libs/tasks/tasks.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     // 配置模块
@@ -34,6 +36,8 @@ import { RedisUtilModule } from './common/libs/redis/redis.module';
       },
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
+    TasksModule,
     TestModule,
   ],
   controllers: [],
