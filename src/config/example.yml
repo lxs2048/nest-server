@@ -7,3 +7,19 @@ app:
   logger:
     # 项目日志存储路径，相对路径（相对本项目根目录）或绝对路径
     dir: './logs'
+db:
+  mysql:
+    host: 'localhost'
+    username: 'dbuser'
+    password: 'dbpwd'
+    database: 'nestdb'
+    port: 3306
+    charser: 'utf8mb4'
+    logger: 'advanced-console'
+    logging: false
+    multipleStatements: true
+    dropSchema: false
+    # 生成环境false https://typeorm.io/data-source-options#common-data-source-options
+    synchronize: false
+    supportBigNumbers: true
+    bigNumberStrings: true

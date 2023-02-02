@@ -1,18 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
-
+import { TestEntity } from './entities/test.entity';
+import { Repository } from 'typeorm';
 @Injectable()
 export class TestService {
+  constructor(
+    @InjectRepository(TestEntity)
+    private readonly testRepository: Repository<TestEntity>,
+  ) {}
+
   create(createTestDto: CreateTestDto) {
     return 'This action adds a new test';
   }
 
-  findAll() {
+  async findAll() {
+    // 写这里直接get就存，方便，，
+    return await this.testRepository.save({ title: 'title', desc: 'desc' });
     return `This action returns all test`;
   }
 
-  findOne(id: number) {
+  async findOne(id: string) {
+    return await this.testRepository.findOneBy({ id });
     return `This action returns a #${id} test`;
   }
 

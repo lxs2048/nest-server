@@ -26,16 +26,12 @@ export class TestController {
 
   @Get()
   findAll() {
-    return (
-      this.testService.findAll() +
-      this.config.get<string>('example.hello') +
-      this.config.get<string>('example.hi.val')
-    );
+    return this.testService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.testService.findOne(+id);
+    return this.testService.findOne(id);
   }
 
   @Patch(':id')
