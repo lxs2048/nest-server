@@ -10,10 +10,14 @@ import {
 import { TestService } from './test.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('test')
 export class TestController {
-  constructor(private readonly testService: TestService) {}
+  constructor(
+    private readonly testService: TestService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Post()
   create(@Body() createTestDto: CreateTestDto) {
@@ -22,7 +26,11 @@ export class TestController {
 
   @Get()
   findAll() {
-    return this.testService.findAll();
+    return (
+      this.testService.findAll() +
+      this.config.get<string>('example.hello') +
+      this.config.get<string>('example.hi.val')
+    );
   }
 
   @Get(':id')

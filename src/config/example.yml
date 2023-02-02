@@ -1,0 +1,5 @@
+# example
+example:
+  hello: 'hello'
+  hi:
+    val: 'hi'
