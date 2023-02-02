@@ -1,0 +1,19 @@
+version: '3'
+services:
+  nest_server:
+    container_name: nest_container
+    build: ./
+    image: nest_image:0.0.1
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - hello_net
+networks:
+  hello_net:
+    external: true # 指定容器使用外部已有的网络
+
+# 后续数据库，前端，使用单独的docker-compose.yml
+# 1. sudo docker network create hello_net
+# 2. 实例数据库容器
+# 3. 启动前后端服务
