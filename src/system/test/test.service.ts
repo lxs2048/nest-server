@@ -5,12 +5,14 @@ import { UpdateTestDto } from './dto/update-test.dto';
 import { TestEntity } from './entities/test.entity';
 import { Repository } from 'typeorm';
 import { RedisUtilService } from 'src/common/libs/redis/redis.service';
+import { EventsGateway } from '../events/events.gateway';
 @Injectable()
 export class TestService {
   constructor(
     @InjectRepository(TestEntity)
     private readonly testRepository: Repository<TestEntity>,
     private readonly redisService: RedisUtilService,
+    private readonly eventsGateway: EventsGateway,
   ) {}
 
   create(createTestDto: CreateTestDto) {
@@ -18,6 +20,7 @@ export class TestService {
   }
 
   async findAll() {
+    this.eventsGateway.PublicMessage('loginEvent', { token: 'sdfjkashf' });
     // 写这里直接get就存，方便，，
     await this.redisService.set('hello', 'hello', 60 * 60 * 24);
     return await this.testRepository.save({ title: 'title', desc: 'desc' });
