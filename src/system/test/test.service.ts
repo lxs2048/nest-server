@@ -4,11 +4,13 @@ import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
 import { TestEntity } from './entities/test.entity';
 import { Repository } from 'typeorm';
+import { RedisUtilService } from 'src/common/libs/redis/redis.service';
 @Injectable()
 export class TestService {
   constructor(
     @InjectRepository(TestEntity)
     private readonly testRepository: Repository<TestEntity>,
+    private readonly redisService: RedisUtilService,
   ) {}
 
   create(createTestDto: CreateTestDto) {
@@ -17,6 +19,7 @@ export class TestService {
 
   async findAll() {
     // 写这里直接get就存，方便，，
+    await this.redisService.set('hello', 'hello', 60 * 60 * 24);
     return await this.testRepository.save({ title: 'title', desc: 'desc' });
     return `This action returns all test`;
   }
