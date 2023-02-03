@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { H5UserService } from './h5-user.service';
 import { CreateH5UserDto } from './dto/create-h5-user.dto';
@@ -16,6 +18,7 @@ export class H5UserController {
   constructor(private readonly h5UserService: H5UserService) {}
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   create(@Body() createH5UserDto: CreateH5UserDto) {
     return this.h5UserService.create(createH5UserDto);
   }
@@ -27,12 +30,12 @@ export class H5UserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.h5UserService.findOne(+id);
+    return this.h5UserService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateH5UserDto: UpdateH5UserDto) {
-    return this.h5UserService.update(+id, updateH5UserDto);
+    return this.h5UserService.update(id, updateH5UserDto);
   }
 
   @Delete(':id')

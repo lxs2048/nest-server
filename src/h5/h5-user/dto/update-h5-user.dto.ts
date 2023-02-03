@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateH5UserDto } from './create-h5-user.dto';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
-export class UpdateH5UserDto extends PartialType(CreateH5UserDto) {}
+export class UpdateH5UserDto {
+  @IsString({ message: 'email类型错误' })
+  @IsEmail()
+  @IsOptional()
+  email?: string;
+
+  @IsString({ message: 'password类型错误' })
+  @IsOptional()
+  password?: string;
+}
