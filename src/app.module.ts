@@ -8,6 +8,7 @@ import { RedisUtilModule } from './common/libs/redis/redis.module';
 import { TasksModule } from 'src/common/libs/tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OssModule } from './common/libs/oss/oss.module';
+import { MiniUserModule } from './mini/mini-user/mini-user.module';
 @Module({
   imports: [
     // 配置模块
@@ -41,6 +42,8 @@ import { OssModule } from './common/libs/oss/oss.module';
     OssModule,
     TasksModule,
     TestModule,
+    // mini
+    MiniUserModule,
   ],
   controllers: [],
   providers: [],
