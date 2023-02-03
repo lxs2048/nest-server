@@ -1,3 +1,8 @@
+export const bucketTopDir = {
+  AvatarImg: 'AvatarImg',
+  Test: 'Test',
+};
+
 export const noFormatRoute = [{ path: '/test', method: 'GET' }];
 
 export const checkInNoFormatRoute = (path: string, method: string) => {

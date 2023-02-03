@@ -7,6 +7,7 @@ import { RedisModuleOptions } from 'nestjs-redis';
 import { RedisUtilModule } from './common/libs/redis/redis.module';
 import { TasksModule } from 'src/common/libs/tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { OssModule } from './common/libs/oss/oss.module';
 @Module({
   imports: [
     // 配置模块
@@ -37,6 +38,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
+    OssModule,
     TasksModule,
     TestModule,
   ],
