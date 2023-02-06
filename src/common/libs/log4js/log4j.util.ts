@@ -250,16 +250,16 @@ Response data:\n${JSON.stringify(data)}`;
 };
 // 格式化http错误日志
 export const httpExceptionFormat = (
-  exception: HttpException,
+  messageInfo: string,
+  status: number,
   request: Request,
 ) => {
-  const status = exception.getStatus();
   return `
 Request original url: ${request.originalUrl}
 Method: ${request.method}
 IP: ${request.ip}
 Status code: ${status}
-Response: ${exception.toString()}`;
+Response: ${messageInfo}`;
 };
 // 格式化其他错误日志
 export const anyExceptionFormat = (
