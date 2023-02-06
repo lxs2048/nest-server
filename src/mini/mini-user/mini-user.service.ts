@@ -4,7 +4,7 @@ import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
 
 @Injectable()
 export class MiniUserService {
-  create(createMiniUserDto: CreateMiniUserDto) {
+  login(createMiniUserDto: CreateMiniUserDto) {
     return 'This action adds a new miniUser';
   }
 

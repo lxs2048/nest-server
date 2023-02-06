@@ -15,9 +15,9 @@ import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
 export class MiniUserController {
   constructor(private readonly miniUserService: MiniUserService) {}
 
-  @Post()
-  create(@Body() createMiniUserDto: CreateMiniUserDto) {
-    return this.miniUserService.create(createMiniUserDto);
+  @Post('login')
+  login(@Body() createMiniUserDto: CreateMiniUserDto) {
+    return this.miniUserService.login(createMiniUserDto);
   }
 
   @Get()
