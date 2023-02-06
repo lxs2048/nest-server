@@ -47,6 +47,17 @@ export class H5UserService {
     return { token };
   }
 
+  /** 校验 token */
+  verifyToken(token: string): H5UserEntity | null {
+    try {
+      if (!token) return null;
+      const payload = this.jwtService.verify(token);
+      return payload;
+    } catch (error) {
+      return null;
+    }
+  }
+
   // 生成token
   createToken(user: Partial<H5UserEntity>) {
     return this.jwtService.sign(user);

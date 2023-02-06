@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { H5UserEntity } from './entities/h5-user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AuthStrategy } from 'src/h5/h5-user/auth.strategy';
 @Module({
   imports: [
     TypeOrmModule.forFeature([H5UserEntity]),
@@ -19,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [H5UserController],
-  providers: [H5UserService],
+  providers: [H5UserService, AuthStrategy],
+  exports: [H5UserService],
 })
 export class H5UserModule {}
