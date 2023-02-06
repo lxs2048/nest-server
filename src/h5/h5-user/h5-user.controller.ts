@@ -12,10 +12,16 @@ import {
 import { H5UserService } from './h5-user.service';
 import { CreateH5UserDto } from './dto/create-h5-user.dto';
 import { UpdateH5UserDto } from './dto/update-h5-user.dto';
+import { LoginUser } from './dto/login-h5-user.dto';
 
 @Controller('user')
 export class H5UserController {
   constructor(private readonly h5UserService: H5UserService) {}
+
+  @Post('login')
+  async login(@Body() dto: LoginUser) {
+    return await this.h5UserService.login(dto.email, dto.password);
+  }
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)

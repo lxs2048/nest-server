@@ -34,3 +34,6 @@ ali:
   accessKeyId: 'hjfdfjhgghjjk',
   accessKeySecret: 'yhghgfggdf',
   bucket: 'bjhkhjkxing'
+jwt:
+  secretkey: 'hjkjkjkghj'
+  expiresin: '24h'
