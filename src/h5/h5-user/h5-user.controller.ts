@@ -14,6 +14,8 @@ import { CreateH5UserDto } from './dto/create-h5-user.dto';
 import { UpdateH5UserDto } from './dto/update-h5-user.dto';
 import { LoginUser } from './dto/login-h5-user.dto';
 import { AllowAnon } from 'src/common/decorators/allow-anon.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/common.enum';
 
 @Controller('user')
 export class H5UserController {
@@ -42,6 +44,7 @@ export class H5UserController {
   }
 
   @Patch(':id')
+  @Roles(Role.SUPER_ADMIN)
   update(@Param('id') id: string, @Body() updateH5UserDto: UpdateH5UserDto) {
     return this.h5UserService.update(id, updateH5UserDto);
   }
