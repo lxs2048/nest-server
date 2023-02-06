@@ -13,20 +13,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
-
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-
+    const status = HttpStatus.INTERNAL_SERVER_ERROR;
     const logFormat = anyExceptionFormat(exception, request, status);
     Logger.error(logFormat);
     response.status(status).json({
       data: null,
       status: status,
       success: false,
-      message: 'Service Error',
-      error: exception.toString(),
+      message: '服务端错误，请联系管理员',
     });
   }
 }
