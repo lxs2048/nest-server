@@ -82,12 +82,25 @@ export class MiniUserService {
     return this.jwtService.sign({ id, nickname, openid, role });
   }
 
+  /** 校验 token */
+  verifyToken(token: string): MiniUserEntity | null {
+    try {
+      if (!token) return null;
+      const payload = this.jwtService.verify(token);
+      return payload;
+    } catch (error) {
+      return null;
+    }
+  }
+
   findAll() {
     return `This action returns all miniUser`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} miniUser`;
+  async findOne(id: string) {
+    const result = await this.miniUserRepository.findOneBy({ id });
+    if (!result) customException.fail('用户id不存在');
+    return result;
   }
 
   update(id: number, updateMiniUserDto: UpdateMiniUserDto) {

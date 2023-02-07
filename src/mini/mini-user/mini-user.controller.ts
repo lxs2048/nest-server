@@ -15,6 +15,7 @@ import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OssService } from 'src/common/libs/oss/oss.service';
 import { bucketTopDir } from 'src/common/enums/common.enum';
+import { AllowAnon } from 'src/common/decorators/allow-anon.decorator';
 
 @Controller('user')
 export class MiniUserController {
@@ -24,11 +25,13 @@ export class MiniUserController {
   ) {}
 
   @Post('login')
+  @AllowAnon()
   login(@Body() createMiniUserDto: CreateMiniUserDto) {
     return this.miniUserService.login(createMiniUserDto);
   }
 
   @Post('upload')
+  @AllowAnon()
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file) {
     const { originalname, buffer } = file;
@@ -46,7 +49,7 @@ export class MiniUserController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.miniUserService.findOne(+id);
+    return this.miniUserService.findOne(id);
   }
 
   @Patch(':id')
