@@ -1,11 +1,85 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMiniUserDto } from './dto/create-mini-user.dto';
 import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
-
+import axios from 'axios';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MiniUserEntity } from './entities/mini-user.entity';
+import { Repository } from 'typeorm';
+import { ConfigService } from '@nestjs/config';
+import { RedisUtilService } from 'src/common/libs/redis/redis.service';
+import { Jscode2session } from './types/mini-user.type';
+import { customException } from 'src/common/utils/customException';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class MiniUserService {
-  login(createMiniUserDto: CreateMiniUserDto) {
-    return 'This action adds a new miniUser';
+  constructor(
+    @InjectRepository(MiniUserEntity)
+    private readonly miniUserRepository: Repository<MiniUserEntity>,
+    private readonly config: ConfigService,
+    private readonly redisService: RedisUtilService,
+    private readonly jwtService: JwtService,
+  ) {}
+  async login(createMiniUserDto: CreateMiniUserDto) {
+    const { nickname, code, avatarurl } = createMiniUserDto;
+    // 1. 获取openid:
+    const loginInfo = (await axios
+      .get(
+        `https://api.weixin.qq.com/sns/jscode2session?appid=${this.config.get(
+          'xcx.AppID',
+        )}&secret=${this.config.get(
+          'xcx.AppSecret',
+        )}&js_code=${code}&grant_type=authorization_code`,
+      )
+      .then((res) => res.data)) as Jscode2session;
+    if (!loginInfo.openid) customException.fail('客户端登录code无效', 400);
+    // 2. 是否存在该用户
+    const userInfo = await this.miniUserRepository.findOneBy({
+      openid: loginInfo.openid,
+    });
+    let _userInfo = userInfo;
+    if (!userInfo) {
+      // 保存用户信息
+      try {
+        const ret = await this.miniUserRepository.save({
+          nickname,
+          avatarurl,
+          openid: loginInfo.openid,
+        });
+        _userInfo = ret;
+      } catch (_) {
+        customException.fail('创建用户信息失败', 500);
+      }
+    } else {
+      // 可能需要更新nickname和avatarurl
+      try {
+        await this.miniUserRepository.update(userInfo.id, {
+          nickname,
+          avatarurl,
+        });
+        _userInfo = {
+          ...userInfo,
+          nickname,
+          avatarurl,
+        };
+      } catch (_) {
+        customException.fail('更新用户信息失败', 500);
+      }
+    }
+    // 3. 生成token
+    const token = this.createToken(_userInfo);
+    // 4. redis缓存
+    await this.redisService.set(
+      `mini-user-token-${_userInfo.id}`,
+      token,
+      60 * 60 * 24 * 15,
+    );
+    return { token };
+  }
+
+  // 生成token
+  createToken(user: Partial<MiniUserEntity>) {
+    const { id, nickname, openid, role } = user;
+    return this.jwtService.sign({ id, nickname, openid, role });
   }
 
   findAll() {

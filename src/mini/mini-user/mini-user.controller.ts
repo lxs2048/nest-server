@@ -6,18 +6,37 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { MiniUserService } from './mini-user.service';
 import { CreateMiniUserDto } from './dto/create-mini-user.dto';
 import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { OssService } from 'src/common/libs/oss/oss.service';
+import { bucketTopDir } from 'src/common/enums/common.enum';
 
 @Controller('user')
 export class MiniUserController {
-  constructor(private readonly miniUserService: MiniUserService) {}
+  constructor(
+    private readonly miniUserService: MiniUserService,
+    private readonly ossService: OssService,
+  ) {}
 
   @Post('login')
   login(@Body() createMiniUserDto: CreateMiniUserDto) {
     return this.miniUserService.login(createMiniUserDto);
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  async upload(@UploadedFile() file) {
+    const { originalname, buffer } = file;
+    const ret = await this.ossService.putBuffer(
+      `${bucketTopDir.AvatarImg}/${originalname}`,
+      buffer,
+    );
+    return ret ? ret.url : '';
   }
 
   @Get()
