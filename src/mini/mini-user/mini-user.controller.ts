@@ -16,7 +16,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { OssService } from 'src/common/libs/oss/oss.service';
 import { bucketTopDir } from 'src/common/enums/common.enum';
 import { AllowAnon } from 'src/common/decorators/allow-anon.decorator';
-
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/common.enum';
 @Controller('user')
 export class MiniUserController {
   constructor(
@@ -43,6 +44,7 @@ export class MiniUserController {
   }
 
   @Get()
+  @Roles(Role.SUPER_ADMIN)
   findAll() {
     return this.miniUserService.findAll();
   }
