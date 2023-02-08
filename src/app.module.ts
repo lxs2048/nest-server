@@ -13,6 +13,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guards/auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { MiniOrderModule } from './mini/mini-order/mini-order.module';
+import { MiniGoodsModule } from './mini/mini-goods/mini-goods.module';
 @Module({
   imports: [
     // 配置模块
@@ -49,6 +50,7 @@ import { MiniOrderModule } from './mini/mini-order/mini-order.module';
     // mini
     MiniUserModule,
     MiniOrderModule,
+    MiniGoodsModule,
   ],
   controllers: [],
   providers: [
