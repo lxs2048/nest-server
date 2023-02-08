@@ -6,9 +6,9 @@ export enum Role {
 }
 
 export enum StatusValue {
-  /** 禁用 */
+  /** 禁用,未支付 */
   FORBIDDEN = 0,
-  /** 正常使用 */
+  /** 正常使用,已支付 */
   NORMAL = 1,
 }
 
