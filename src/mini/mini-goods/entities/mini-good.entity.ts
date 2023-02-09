@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from 'src/common/libs/entities/BaseEntity';
 import { StatusValue } from 'src/common/enums/common.enum';
+import { MiniOrdersEntity } from 'src/mini/mini-order/entities/mini-order.entity';
 @Entity('miniGoods') //数据表的名字
 export class MiniGoodsEntity extends BaseEntity {
   @Column({
@@ -27,4 +28,6 @@ export class MiniGoodsEntity extends BaseEntity {
     comment: '所属状态[1-有效,0-禁用]',
   })
   status: StatusValue;
+  @OneToMany(() => MiniOrdersEntity, (order) => order.goods_id)
+  orders: MiniOrdersEntity[];
 }

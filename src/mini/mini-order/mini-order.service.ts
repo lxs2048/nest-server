@@ -27,12 +27,16 @@ export class MiniOrderService {
   }
 
   // 查全部
-  async findAll(pageQuery: PagingQueryDto) {
+  async findAll(pageQuery: PagingQueryDto,isAdmin:Boolean) {
     const { pageSize, currentPage } = pageQuery;
     try {
       // 跳过skip条查后面的take个
-      const queryData = await this.miniOrdersRepository
-        .createQueryBuilder()
+      let temp = this.miniOrdersRepository.createQueryBuilder("order")
+      if(isAdmin){
+        temp = temp.leftJoinAndSelect("order.user", "user")
+      }
+      const queryData = await temp
+        .leftJoinAndSelect("order.goods", "goods")
         .skip(pageSize * (currentPage - 1))
         .take(pageSize)
         .getManyAndCount();

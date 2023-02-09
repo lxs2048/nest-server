@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Request
 } from '@nestjs/common';
 import { MiniOrderService } from './mini-order.service';
 import { CreateMiniOrderDto } from './dto/create-mini-order.dto';
@@ -26,11 +27,12 @@ export class MiniOrderController {
 
   // 查找全部
   @Post('lists')
-  findAll(@Body() body: PagingQueryDto) {
+  findAll(@Body() body: PagingQueryDto,@Request() req) {
     if (!body.currentPage || !body.pageSize) {
       customException.fail('分页查询参数错误');
     }
-    return this.miniOrderService.findAll(body);
+    const isAdmin = req.user?.role === Role.SUPER_ADMIN
+    return this.miniOrderService.findAll(body,isAdmin);
   }
 
   @Get(':id')
