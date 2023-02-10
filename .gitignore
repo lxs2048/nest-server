@@ -38,3 +38,5 @@ lerna-debug.log*
 
 src/config/dev.yml
 src/config/prod.yml
+src/config/apiclient_cert.pem
+src/config/apiclient_key.pem

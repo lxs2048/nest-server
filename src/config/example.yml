@@ -43,3 +43,7 @@ xcx:
   jwt:
     secretkey: 'SKDFDUWKASFHSIUHWHEFJDIERFJSKDFJ'
     expiresin: '24h'
+wxshpt:
+  merchantId: '89756907789'
+  apiv3: '879472562986437219804'
+  websiteCb: 'https://dol.mynatapp.cc'

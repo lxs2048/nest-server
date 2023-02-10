@@ -17,7 +17,10 @@ export const bucketTopDir = {
   Test: 'Test',
 };
 
-export const noFormatRoute = [{ path: '/test', method: 'GET' }];
+export const noFormatRoute = [
+  { path: '/test', method: 'GET' },
+  { path: '/order/payCb', method: 'POST' },
+];
 
 export const checkInNoFormatRoute = (path: string, method: string) => {
   let flag = false;

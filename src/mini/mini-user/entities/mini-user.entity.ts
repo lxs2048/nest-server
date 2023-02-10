@@ -10,7 +10,7 @@ export class MiniUserEntity extends BaseEntity {
     length: 28,
     nullable: false,
     unique: true,
-    select: false,
+    select: true, //放开，其他地方用到
     update: false,
     comment: 'openId',
   })

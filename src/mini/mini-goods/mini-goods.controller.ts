@@ -24,6 +24,7 @@ export class MiniGoodsController {
   }
   // 查找全部
   @Post('lists')
+  @AllowAnon()
   findAll(@Body() body: PagingQueryDto) {
     if (!body.currentPage || !body.pageSize) {
       customException.fail('分页查询参数错误');
