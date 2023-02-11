@@ -17,6 +17,7 @@ import {
   TradeState,
 } from 'src/common/types/order';
 import { Role, StatusValue } from 'src/common/enums/common.enum';
+import { RedisUtilService } from 'src/common/libs/redis/redis.service';
 
 @Injectable()
 export class MiniOrderService {
@@ -25,6 +26,7 @@ export class MiniOrderService {
     private readonly miniOrdersRepository: Repository<MiniOrdersEntity>,
     private readonly miniGoodsService: MiniGoodsService,
     private readonly config: ConfigService,
+    private readonly redisService: RedisUtilService,
     @Inject(WECHAT_PAY_MANAGER) private wxPay: WxPay,
   ) {}
 
@@ -33,7 +35,6 @@ export class MiniOrderService {
     createMiniOrderDto: CreateMiniOrderDto,
     userInfo: MiniUserEntity,
   ) {
-    console.log(createMiniOrderDto);
     // 1.获取当前用户的openId
     const { openid, id } = userInfo;
     // 2.判断外部订单号是否存在=》同一个订单号发起统一支付接口只能一次，可以把取消的订单号重新生成一个即可
@@ -43,6 +44,10 @@ export class MiniOrderService {
     const { goods_id, out_trade_no } = createMiniOrderDto || {};
     if (out_trade_no) {
       // 取消支付的订单支付
+      const prepay = await this.redisService.hGetAll('prepay_' + out_trade_no);
+      if (prepay) {
+        return prepay;
+      }
       try {
         await this.miniOrdersRepository
           .createQueryBuilder()
@@ -72,7 +77,6 @@ export class MiniOrderService {
       },
       out_trade_no: _out_trade_no,
     };
-    console.log(_out_trade_no, '111');
     try {
       // 5.保存订单
       if (!out_trade_no) {
@@ -84,6 +88,7 @@ export class MiniOrderService {
       }
       // 6.获取参数
       const result = await this.wxPay.transactions_jsapi(params);
+      await this.redisService.hmset('prepay_' + _out_trade_no, result, 7200);
       return result;
     } catch (error) {
       customException.fail('创建订单失败', 500);
@@ -108,13 +113,20 @@ export class MiniOrderService {
       code: 'FAIL',
       message: '失败',
     };
-    if (trade_state === TradeState.SUCCESS) {
-      const order = await this.miniOrdersRepository.findOneBy({ out_trade_no });
-      if (!order) return failObj;
-      await this.updatePayStatus(order.id, { pay_status: StatusValue.NORMAL });
-      return '';
+    try {
+      if (trade_state === TradeState.SUCCESS) {
+        await this.miniOrdersRepository
+          .createQueryBuilder()
+          .update()
+          .set({ pay_status: StatusValue.NORMAL })
+          .where('out_trade_no = :out_trade_no', { out_trade_no })
+          .execute();
+        await this.redisService.hdelAll('prepay_' + out_trade_no);
+        return '';
+      }
+    } catch (error) {
+      return failObj;
     }
-    return failObj;
   }
 
   // 查全部
@@ -130,6 +142,7 @@ export class MiniOrderService {
         temp = temp.leftJoinAndSelect('order.user', 'user');
       }
       const queryData = await temp
+        .orderBy('order.created_at', 'DESC')
         .leftJoinAndSelect('order.goods', 'goods')
         .skip(pageSize * (currentPage - 1))
         .take(pageSize)
@@ -143,6 +156,8 @@ export class MiniOrderService {
         page: Math.ceil(total / pageSize),
       };
     } catch (error) {
+      console.log(error);
+
       customException.fail('查询失败', 500);
     }
   }

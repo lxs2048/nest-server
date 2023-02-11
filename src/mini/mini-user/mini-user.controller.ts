@@ -52,7 +52,6 @@ export class MiniUserController {
       buffer,
     );
     const website = this.config.get('ali.website');
-    console.log(ret);
     return ret ? `${website}/${ret.name}` : '';
   }
 

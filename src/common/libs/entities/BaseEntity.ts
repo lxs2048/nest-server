@@ -16,7 +16,7 @@ export class BaseEntity {
     name: 'created_at',
     comment: '创建时间',
   })
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
@@ -24,5 +24,5 @@ export class BaseEntity {
     name: 'updated_at',
     comment: '更新时间',
   })
-  updatedAt: Date;
+  update_at: Date;
 }
