@@ -43,15 +43,22 @@ export class MiniUserController {
   async upload(@UploadedFile() file) {
     const { buffer } = file;
     const fileName = `${
-      new Date().getTime() + Math.random().toString(36).slice(-7) + extname(file.originalname)
+      new Date().getTime() +
+      Math.random().toString(36).slice(-7) +
+      extname(file.originalname)
     }`;
     const ret = await this.ossService.putBuffer(
       `${bucketTopDir.AvatarImg}/${fileName}`,
       buffer,
     );
-    const website = this.config.get('ali.website')
+    const website = this.config.get('ali.website');
     console.log(ret);
     return ret ? `${website}/${ret.name}` : '';
+  }
+
+  @Post('getPhone')
+  getPhone(@Body() body, @Request() req) {
+    return this.miniUserService.getPhone(body.code, req.user);
   }
 
   /* 获取个人信息 */

@@ -93,6 +93,34 @@ export class MiniUserService {
     }
   }
 
+  /* 获取手机号 */
+  async getPhone(code: string, user: MiniUserEntity) {
+    // 校验code
+    if (!code) {
+      customException.fail('缺少获取手机号参数code');
+    }
+    // 获取token
+    const AccesstToken = await this.redisService.get('access_token_wx_xcx');
+    // 获取手机信息 https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/user-info/phone-number/getPhoneNumber.html
+    try {
+      const phoneData = await axios
+        .post(
+          `https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=${AccesstToken}`,
+          {
+            code,
+          },
+        )
+        .then((res) => res.data);
+      const phoneNumber = phoneData['phone_info']['phoneNumber'];
+      if (phoneNumber) {
+        const { id } = user;
+        return this.miniUserRepository.update(id, { phone: phoneNumber });
+      }
+    } catch (error) {
+      customException.fail('更新手机号失败', 500);
+    }
+  }
+
   findAll() {
     return `This action returns all miniUser`;
   }
