@@ -8,7 +8,7 @@ import axios from 'axios';
 import { CreateMiniUserDto } from './dto/create-mini-user.dto';
 import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
 import { MiniUserEntity } from './entities/mini-user.entity';
-
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class MiniUserService {
   constructor(
@@ -16,6 +16,7 @@ export class MiniUserService {
     private readonly miniUserRepository: Repository<MiniUserEntity>,
     private readonly config: ConfigService,
     private readonly redisService: RedisUtilService,
+    private readonly jwtService: JwtService,
   ) {}
   async login(createMiniUserDto: CreateMiniUserDto) {
     const { loginCode, phoneCode } = createMiniUserDto;
@@ -50,24 +51,17 @@ export class MiniUserService {
       _user = user;
     }
     // 处理登录
-    console.log(_user);
-    /*
-    {
-      // id: 'f5548296-b4d0-4049-b4b9-aa8fdf22e84b',
-      phone: '(86)17835204878',
-      openid: 'oGVaj5B2BI35RARDhDBc8dZhvqrA',
-      nickname: null,
-      avatarurl: null,
-      id: 'f5548296-b4d0-4049-b4b9-aa8fdf22e84b',
-      createdAt: 2023-03-29T07:06:45.609Z,
-      updatedAt: 2023-03-29T07:06:45.609Z,
-      role: 1,
-      status: 1
-    }
-    */
+    // 生成token
+    const token = this.createToken(_user);
+    // redis缓存
+    await this.redisService.set(
+      `mini-user-token-${_user.id}`,
+      token,
+      60 * 60 * 24 * 15,
+    );
     return {
-      token: '',
-      userInfo: {},
+      token,
+      userInfo: _user,
     };
   }
 
@@ -88,6 +82,12 @@ export class MiniUserService {
   }
   async findBy(data: any) {
     return this.miniUserRepository.findOneBy(data);
+  }
+
+  /* 生成token */
+  createToken(user: Partial<MiniUserEntity>) {
+    const { id, openid, role } = user;
+    return this.jwtService.sign({ id, openid, role });
   }
   /* 获取手机号 */
   async getPhone(phoneCode: string) {

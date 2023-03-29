@@ -34,3 +34,11 @@ ali:
   accessKeyId: 'hjfdfjhgghjjk',
   accessKeySecret: 'yhghgfggdf',
   bucket: 'bjhkhjkxing'
+xcx:
+  # 小程序id
+  AppID: 'wxdfakfjdkasju493fsd'
+  # 秘钥
+  AppSecret: 'kfdjaskfkasjflfji348590ufewj'
+  jwt:
+    secretkey: 'SKDFDUWKASFHSIUHWHEFJDIERFJSKDFJ'
+    expiresin: '24h'
