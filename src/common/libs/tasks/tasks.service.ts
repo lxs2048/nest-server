@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Interval, Timeout } from '@nestjs/schedule';
 import { RedisUtilService } from '../redis/redis.service';
+import axios from 'axios';
 @Injectable()
 export class TasksService {
   constructor(
@@ -16,5 +17,25 @@ export class TasksService {
   @Interval(1000 * 60 * 60) // 每隔1小时执行一次
   async refreshAccessToken() {
     console.log('==refresh==');
+  }
+
+  // 微信小程序access_token与公众号类似：https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getAccessToken.html
+  @Timeout(5000)
+  @Interval(1000 * 60 * 60) //每隔1小时执行一次
+  async getXcxAccessToken() {
+    const TokenData = await axios
+      .get(
+        `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.config.get(
+          'xcx.AppID',
+        )}&secret=${this.config.get('xcx.AppSecret')}`,
+      )
+      .then((res) => res.data);
+    if (TokenData.access_token) {
+      this.redisService.set(
+        'access_token_wx_xcx',
+        TokenData.access_token,
+        7200,
+      );
+    }
   }
 }
