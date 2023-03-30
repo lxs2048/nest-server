@@ -11,12 +11,15 @@ import { MiniUserService } from './mini-user.service';
 import { CreateMiniUserDto } from './dto/create-mini-user.dto';
 import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
 import { AllowAnon } from 'src/common/decorators/allow-anon.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/common.enum';
 
 @Controller('user')
 export class MiniUserController {
   constructor(private readonly miniUserService: MiniUserService) {}
 
   @Post('hello')
+  @Roles(Role.SUPER_ADMIN)
   hello(@Body() body) {
     return body.hello;
   }

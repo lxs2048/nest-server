@@ -11,6 +11,7 @@ import { OssModule } from './common/libs/oss/oss.module';
 import { MiniUserModule } from './mini/mini-user/mini-user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guards/auth.guard';
+import { RolesGuard } from './common/guards/roles.guard';
 @Module({
   imports: [
     // 配置模块
@@ -52,6 +53,10 @@ import { JwtAuthGuard } from './common/guards/auth.guard';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
