@@ -9,6 +9,8 @@ import { TasksModule } from 'src/common/libs/tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OssModule } from './common/libs/oss/oss.module';
 import { MiniUserModule } from './mini/mini-user/mini-user.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './common/guards/auth.guard';
 @Module({
   imports: [
     // 配置模块
@@ -46,6 +48,11 @@ import { MiniUserModule } from './mini/mini-user/mini-user.module';
     MiniUserModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

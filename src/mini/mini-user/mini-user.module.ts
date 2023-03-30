@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MiniUserEntity } from './entities/mini-user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AuthStrategy } from './auth.strategy';
 @Module({
   imports: [
     TypeOrmModule.forFeature([MiniUserEntity]),
@@ -19,6 +20,7 @@ import { ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [MiniUserController],
-  providers: [MiniUserService],
+  providers: [MiniUserService, AuthStrategy],
+  exports: [MiniUserService],
 })
 export class MiniUserModule {}

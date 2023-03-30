@@ -10,12 +10,19 @@ import {
 import { MiniUserService } from './mini-user.service';
 import { CreateMiniUserDto } from './dto/create-mini-user.dto';
 import { UpdateMiniUserDto } from './dto/update-mini-user.dto';
+import { AllowAnon } from 'src/common/decorators/allow-anon.decorator';
 
 @Controller('user')
 export class MiniUserController {
   constructor(private readonly miniUserService: MiniUserService) {}
 
+  @Post('hello')
+  hello(@Body() body) {
+    return body.hello;
+  }
+
   @Post('login')
+  @AllowAnon()
   login(@Body() createMiniUserDto: CreateMiniUserDto) {
     return this.miniUserService.login(createMiniUserDto);
   }

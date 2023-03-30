@@ -80,6 +80,19 @@ export class MiniUserService {
   remove(id: number) {
     return `This action removes a #${id} miniUser`;
   }
+
+  /* 校验token */
+  verifyToken(token: string): MiniUserEntity | null {
+    try {
+      if (!token) return null;
+      const payload = this.jwtService.verify(token);
+      return payload;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  /* 条件查找 */
   async findBy(data: any) {
     return this.miniUserRepository.findOneBy(data);
   }
