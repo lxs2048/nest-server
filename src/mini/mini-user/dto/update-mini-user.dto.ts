@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateMiniUserDto } from './create-mini-user.dto';
-
-export class UpdateMiniUserDto extends PartialType(CreateMiniUserDto) {}
+import { IsNotEmpty } from 'class-validator';
+export class UpdateMiniUserDto {
+  @IsNotEmpty()
+  nickname: string; //登录code
+  @IsNotEmpty()
+  avatarurl: string; //手机号code
+}

@@ -81,6 +81,20 @@ export class MiniUserService {
     return `This action removes a #${id} miniUser`;
   }
 
+  /* 修改基本信息 */
+  async modifyBasic(
+    updateMiniUserDto: UpdateMiniUserDto,
+    user: MiniUserEntity,
+  ) {
+    const { nickname, avatarurl } = updateMiniUserDto;
+    await this.miniUserRepository.update(user.id, {
+      nickname,
+      avatarurl,
+    });
+    const data = await this.findBy({ id: user.id });
+    return data;
+  }
+
   /* 校验token */
   verifyToken(token: string): MiniUserEntity | null {
     try {
