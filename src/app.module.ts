@@ -8,6 +8,8 @@ import { RedisUtilModule } from './common/libs/redis/redis.module';
 import { TasksModule } from 'src/common/libs/tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OssModule } from './common/libs/oss/oss.module';
+import { OpenaiModule } from './common/libs/openai/openai.module';
+import { ChatgptModule } from './system/chatgpt/chatgpt.module';
 @Module({
   imports: [
     // 配置模块
@@ -39,7 +41,9 @@ import { OssModule } from './common/libs/oss/oss.module';
     }),
     ScheduleModule.forRoot(),
     OssModule,
+    OpenaiModule,
     TasksModule,
+    ChatgptModule,
     TestModule,
   ],
   controllers: [],

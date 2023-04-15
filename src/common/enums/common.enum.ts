@@ -14,3 +14,9 @@ export const checkInNoFormatRoute = (path: string, method: string) => {
   });
   return flag;
 };
+
+export const createImageSize = {
+  sm: '256x256',
+  ml: '512x512',
+  lg: '1024x1024',
+};
